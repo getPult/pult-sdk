@@ -1,0 +1,50 @@
+{
+  "name": "@pult/sdk",
+  "version": "0.1.0",
+  "description": "TypeScript SDK for Pult platform",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "pult",
+    "paas",
+    "baas",
+    "database",
+    "auth",
+    "storage",
+    "realtime",
+    "redis",
+    "queue",
+    "sdk"
+  ],
+  "author": "Pult <hello@pult.rest>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/getPult/pult-sdk.git"
+  },
+  "homepage": "https://pult.rest",
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^2.0.0"
+  }
+}
