@@ -187,3 +187,82 @@ export interface LogLine {
   level: string
   message: string
 }
+
+export interface AuthClientOptions {
+  url: string
+  headers?: Record<string, string>
+}
+
+export interface AuthUser {
+  id: string
+  email: string
+  role: string
+  app_metadata: Record<string, unknown>
+  user_metadata: Record<string, unknown>
+  email_confirmed_at?: string
+  created_at: string
+  updated_at: string
+}
+
+export interface AuthSession {
+  access_token: string
+  token_type: string
+  expires_in: number
+  refresh_token: string
+  user: AuthUser
+}
+
+export interface SignUpRequest {
+  email: string
+  password: string
+  data?: Record<string, unknown>
+}
+
+export interface SignInRequest {
+  email: string
+  password: string
+}
+
+export interface UpdateUserRequest {
+  email?: string
+  password?: string
+  data?: Record<string, unknown>
+}
+
+export interface GitConnection {
+  id: string
+  app_id: string
+  provider: string
+  repo_full_name: string
+  repo_url: string
+  branch: string
+  auto_deploy: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface ConnectGitRequest {
+  repo: string
+  branch?: string
+}
+
+export interface ConnectGitResponse {
+  connection: GitConnection
+  webhook: {
+    url: string
+    secret: string
+    content_type: string
+    events: string
+  }
+  instructions: string
+  next: string
+}
+
+export interface GitStatus {
+  connected: boolean
+  provider?: string
+  repo?: string
+  branch?: string
+  auto_deploy?: boolean
+  created_at?: string
+}
