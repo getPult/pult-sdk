@@ -1,11 +1,11 @@
-# @pult/sdk
+# @getpultdev/sdk
 
 TypeScript SDK for the [Pult](https://pult.rest) platform. Deploy anything, anywhere.
 
 ## Install
 
 ```bash
-npm install @pult/sdk
+npm install @getpultdev/sdk
 ```
 
 ## Control Plane Client
@@ -13,7 +13,7 @@ npm install @pult/sdk
 Manage apps, deployments, environment variables, domains, and databases.
 
 ```typescript
-import { createClient } from '@pult/sdk'
+import { createClient } from '@getpultdev/sdk'
 
 const pult = createClient({
   url: 'https://api.pult.rest',
@@ -150,7 +150,7 @@ await pult.git.disconnect('app-id')
 Authenticate users against your app's auth service at `auth-{appname}.pult.rest`.
 
 ```typescript
-import { createAuthClient } from '@pult/sdk'
+import { createAuthClient } from '@getpultdev/sdk'
 
 const auth = createAuthClient({
   url: 'https://auth-myapp.pult.rest',
@@ -217,7 +217,7 @@ Query your app's managed database directly via PostgREST.
 Each app has its own PostgREST at `db-{appname}.pult.rest`.
 
 ```typescript
-import { createDbClient } from '@pult/sdk'
+import { createDbClient } from '@getpultdev/sdk'
 
 const db = createDbClient({
   url: 'https://db-myapp.pult.rest',
