@@ -1,34 +1,38 @@
-import { AuthClient } from "./auth"
-import { DatabaseClient } from "./db"
+import { AppsClient } from "./apps"
+import { DatabasesClient } from "./databases"
+import { DeploymentsClient } from "./deployments"
+import { DomainsClient } from "./domains"
+import { EnvClient } from "./env"
 import { HttpClient } from "./http"
-import { QueueClient } from "./queue"
-import { RealtimeClient } from "./realtime"
-import { RedisClient } from "./redis"
-import { StorageClient } from "./storage"
-import type { PultClientOptions } from "./types"
+import { LogsClient } from "./logs"
+import type { PultClientOptions, PultResponse, StatusResponse } from "./types"
 
 export class PultClient {
-  readonly db: DatabaseClient
-  readonly auth: AuthClient
-  readonly storage: StorageClient
-  readonly realtime: RealtimeClient
-  readonly redis: RedisClient
-  readonly queue: QueueClient
+  readonly apps: AppsClient
+  readonly deployments: DeploymentsClient
+  readonly logs: LogsClient
+  readonly env: EnvClient
+  readonly domains: DomainsClient
+  readonly databases: DatabasesClient
 
   private http: HttpClient
 
   constructor(options: PultClientOptions) {
     const headers: Record<string, string> = { ...options.headers }
     if (options.apiKey) {
-      headers["apikey"] = options.apiKey
+      headers["Authorization"] = `Bearer ${options.apiKey}`
     }
 
     this.http = new HttpClient(options.url, headers)
-    this.db = new DatabaseClient(this.http)
-    this.auth = new AuthClient(this.http)
-    this.storage = new StorageClient(this.http)
-    this.realtime = new RealtimeClient(options.url, headers)
-    this.redis = new RedisClient(this.http)
-    this.queue = new QueueClient(this.http)
+    this.apps = new AppsClient(this.http)
+    this.deployments = new DeploymentsClient(this.http)
+    this.logs = new LogsClient(this.http)
+    this.env = new EnvClient(this.http)
+    this.domains = new DomainsClient(this.http)
+    this.databases = new DatabasesClient(this.http)
+  }
+
+  async health(): Promise<PultResponse<StatusResponse>> {
+    return this.http.get<StatusResponse>("/health")
   }
 }
