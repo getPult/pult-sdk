@@ -23,15 +23,15 @@ export class HttpClient {
     }, extraHeaders)
   }
 
-  async patch<T>(path: string, body?: unknown): Promise<PultResponse<T>> {
-    return this.request<T>(this.buildUrl(path), {
+  async patch<T>(path: string, body?: unknown, params?: Record<string, string>): Promise<PultResponse<T>> {
+    return this.request<T>(this.buildUrl(path, params), {
       method: "PATCH",
       body: body !== undefined ? JSON.stringify(body) : undefined,
     })
   }
 
-  async del<T>(path: string): Promise<PultResponse<T>> {
-    return this.request<T>(this.buildUrl(path), { method: "DELETE" })
+  async del<T>(path: string, params?: Record<string, string>): Promise<PultResponse<T>> {
+    return this.request<T>(this.buildUrl(path, params), { method: "DELETE" })
   }
 
   streamSSE(path: string, onData: (data: string) => void, onDone?: () => void, onError?: (err: string) => void): { close: () => void } {

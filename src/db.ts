@@ -159,15 +159,16 @@ export class QueryBuilder<T> {
     if (this.limitCount !== null) params["limit"] = String(this.limitCount)
     if (this.offsetCount !== null) params["offset"] = String(this.offsetCount)
 
+    const hasParams = Object.keys(params).length > 0
     switch (this.method) {
       case "GET":
-        return this.http.get<T[]>(path, params)
+        return this.http.get<T[]>(path, hasParams ? params : undefined)
       case "POST":
         return this.http.post<T[]>(path, this.body)
       case "PATCH":
-        return this.http.patch<T[]>(path, this.body)
+        return this.http.patch<T[]>(path, this.body, hasParams ? params : undefined)
       case "DELETE":
-        return this.http.del<T[]>(path)
+        return this.http.del<T[]>(path, hasParams ? params : undefined)
     }
   }
 
