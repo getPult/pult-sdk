@@ -1,19 +1,19 @@
-import type { HttpClient } from "./http"
-import type { PultResponse } from "./types"
+import { HttpClient } from "./http"
+import type { DbClientOptions, PultResponse } from "./types"
 
-export class DatabaseClient {
+export class DbClient {
   private http: HttpClient
 
-  constructor(http: HttpClient) {
-    this.http = http
+  constructor(options: DbClientOptions) {
+    const headers: Record<string, string> = { ...options.headers }
+    if (options.apiKey) {
+      headers["Authorization"] = `Bearer ${options.apiKey}`
+    }
+    this.http = new HttpClient(options.url, headers)
   }
 
   from<T = Record<string, unknown>>(table: string): QueryBuilder<T> {
     return new QueryBuilder<T>(this.http, table)
-  }
-
-  async graphql<T = unknown>(query: string, variables?: Record<string, unknown>): Promise<PultResponse<T>> {
-    return this.http.post<T>("/rest/v1/rpc/graphql", { query, variables })
   }
 }
 
@@ -129,7 +129,7 @@ export class QueryBuilder<T> {
   }
 
   async execute(): Promise<PultResponse<T[]>> {
-    const path = `/rest/v1/${this.table}`
+    const path = `/${this.table}`
     const params: Record<string, string> = {}
 
     if (this.selectColumns !== "*") {
@@ -137,8 +137,10 @@ export class QueryBuilder<T> {
     }
 
     for (const filter of this.filters) {
-      const [key, ...rest] = filter.split("=")
-      if (key) params[key] = rest.join("=")
+      const idx = filter.indexOf("=")
+      if (idx > 0) {
+        params[filter.slice(0, idx)] = filter.slice(idx + 1)
+      }
     }
 
     if (this.orderClause) params["order"] = this.orderClause
@@ -153,7 +155,7 @@ export class QueryBuilder<T> {
       case "PATCH":
         return this.http.patch<T[]>(path, this.body)
       case "DELETE":
-        return this.http.delete<T[]>(path)
+        return this.http.del<T[]>(path)
     }
   }
 
