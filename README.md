@@ -122,6 +122,86 @@ await pult.databases.createReplica('app-id', { region: 'us' })
 await pult.databases.delete('app-id')
 ```
 
+### Git Integration
+
+```typescript
+const { data } = await pult.git.connect('app-id', {
+  repo: 'user/repo',
+  branch: 'main',
+})
+console.log(data.webhook)
+
+const { data: status } = await pult.git.status('app-id')
+
+await pult.git.disconnect('app-id')
+```
+
+## Auth Client
+
+Authenticate users against your app's auth service at `auth-{appname}.pult.rest`.
+
+```typescript
+import { createAuthClient } from '@pult/sdk'
+
+const auth = createAuthClient({
+  url: 'https://auth-myapp.pult.rest',
+})
+```
+
+### Sign Up & Sign In
+
+```typescript
+const { data: user } = await auth.signUp({
+  email: 'user@example.com',
+  password: 'securepassword',
+})
+
+const { data: session } = await auth.signIn({
+  email: 'user@example.com',
+  password: 'securepassword',
+})
+```
+
+### Session Management
+
+```typescript
+const session = auth.getSession()
+
+const { data: refreshed } = await auth.refreshSession()
+
+await auth.signOut()
+```
+
+### User Management
+
+```typescript
+const { data: user } = await auth.getUser()
+
+const { data: updated } = await auth.updateUser({
+  data: { display_name: 'Jane' },
+})
+```
+
+### Password Reset & Magic Link
+
+```typescript
+await auth.resetPassword('user@example.com')
+
+await auth.signInWithMagicLink('user@example.com')
+```
+
+### Auth State Changes
+
+```typescript
+const { unsubscribe } = auth.onAuthStateChange((session) => {
+  if (session) {
+    console.log('Signed in:', session.user.email)
+  } else {
+    console.log('Signed out')
+  }
+})
+```
+
 ## Data Plane Client (PostgREST)
 
 Query your app's managed database directly via PostgREST.
