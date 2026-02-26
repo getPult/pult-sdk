@@ -122,6 +122,15 @@ await pult.databases.createReplica('app-id', { region: 'us' })
 await pult.databases.delete('app-id')
 ```
 
+#### SQL Tagged Template
+
+```typescript
+const userId = 'abc-123'
+const { data } = await pult.databases.sql('app-id')`
+  SELECT * FROM posts WHERE author_id = ${userId} AND published = ${true}
+`
+```
+
 ### Git Integration
 
 ```typescript
