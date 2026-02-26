@@ -1,5 +1,5 @@
 {
-  "name": "@pult/sdk",
+  "name": "@getpultdev/sdk",
   "version": "0.1.0",
   "description": "TypeScript SDK for Pult platform",
   "type": "module",
