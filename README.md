@@ -236,6 +236,33 @@ await db.from('posts').update({ title: 'Updated' }).eq('id', 1)
 await db.from('posts').delete().eq('id', 1)
 ```
 
+### GraphQL (pg_graphql)
+
+```typescript
+const { data } = await db.graphql(`
+  query {
+    postsCollection(filter: { published: { eq: true } }) {
+      edges {
+        node {
+          id
+          title
+          author { name }
+        }
+      }
+    }
+  }
+`)
+
+const { data } = await db.graphql(
+  `query GetPost($id: BigInt!) {
+    postsCollection(filter: { id: { eq: $id } }) {
+      edges { node { id title body } }
+    }
+  }`,
+  { id: 1 },
+)
+```
+
 ### Filters
 
 ```typescript
