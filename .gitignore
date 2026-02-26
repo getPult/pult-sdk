@@ -1,0 +1,11 @@
+node_modules/
+dist/
+*.tgz
+.env
+.env.*
+*.pem
+coverage/
+.DS_Store
+
+# Internal instructions — not public
+CLAUDE.md
