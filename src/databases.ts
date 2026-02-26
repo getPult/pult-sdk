@@ -38,6 +38,16 @@ export class DatabasesClient {
     return this.http.post<DatabaseQueryResponse>(`/apps/${appId}/database/query`, req)
   }
 
+  sql(appId: string): (strings: TemplateStringsArray, ...values: unknown[]) => Promise<PultResponse<DatabaseQueryResponse>> {
+    return (strings: TemplateStringsArray, ...values: unknown[]) => {
+      let sql = strings[0] ?? ""
+      for (let i = 0; i < values.length; i++) {
+        sql += `$${i + 1}${strings[i + 1] ?? ""}`
+      }
+      return this.query(appId, { sql, params: values })
+    }
+  }
+
   async listMigrations(appId: string): Promise<PultResponse<Migration[]>> {
     return this.http.get<Migration[]>(`/apps/${appId}/database/migrations`)
   }
