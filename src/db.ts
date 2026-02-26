@@ -1,5 +1,5 @@
 import { HttpClient } from "./http"
-import type { DbClientOptions, PultResponse } from "./types"
+import type { DbClientOptions, GraphQLResponse, PultResponse } from "./types"
 
 export class DbClient {
   private http: HttpClient
@@ -14,6 +14,18 @@ export class DbClient {
 
   from<T = Record<string, unknown>>(table: string): QueryBuilder<T> {
     return new QueryBuilder<T>(this.http, table)
+  }
+
+  async graphql<T = Record<string, unknown>>(
+    query: string,
+    variables?: Record<string, unknown>,
+    operationName?: string,
+  ): Promise<PultResponse<GraphQLResponse<T>>> {
+    return this.http.post<GraphQLResponse<T>>(
+      "/rpc/graphql",
+      { query, variables, operationName },
+      { "Content-Profile": "graphql_public" },
+    )
   }
 }
 

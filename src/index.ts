@@ -64,4 +64,7 @@ export type {
   ConnectGitRequest,
   ConnectGitResponse,
   GitStatus,
+  GraphQLRequest,
+  GraphQLResponse,
+  GraphQLError,
 } from "./types"

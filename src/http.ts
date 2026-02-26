@@ -16,11 +16,11 @@ export class HttpClient {
     return this.request<T>(this.buildUrl(path, params), { method: "GET" })
   }
 
-  async post<T>(path: string, body?: unknown): Promise<PultResponse<T>> {
+  async post<T>(path: string, body?: unknown, extraHeaders?: Record<string, string>): Promise<PultResponse<T>> {
     return this.request<T>(this.buildUrl(path), {
       method: "POST",
       body: body !== undefined ? JSON.stringify(body) : undefined,
-    })
+    }, extraHeaders)
   }
 
   async patch<T>(path: string, body?: unknown): Promise<PultResponse<T>> {
@@ -65,9 +65,10 @@ export class HttpClient {
     return url.toString()
   }
 
-  private async request<T>(url: string, init: RequestInit): Promise<PultResponse<T>> {
+  private async request<T>(url: string, init: RequestInit, extraHeaders?: Record<string, string>): Promise<PultResponse<T>> {
     try {
-      const response = await fetch(url, { ...init, headers: this.headers })
+      const headers = extraHeaders ? { ...this.headers, ...extraHeaders } : this.headers
+      const response = await fetch(url, { ...init, headers })
 
       if (!response.ok) {
         return { data: null, error: await this.parseError(response) }

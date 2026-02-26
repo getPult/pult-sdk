@@ -258,6 +258,23 @@ export interface ConnectGitResponse {
   next: string
 }
 
+export interface GraphQLRequest {
+  query: string
+  variables?: Record<string, unknown>
+  operationName?: string
+}
+
+export interface GraphQLResponse<T = Record<string, unknown>> {
+  data: T | null
+  errors?: GraphQLError[]
+}
+
+export interface GraphQLError {
+  message: string
+  locations?: { line: number; column: number }[]
+  path?: string[]
+}
+
 export interface GitStatus {
   connected: boolean
   provider?: string
