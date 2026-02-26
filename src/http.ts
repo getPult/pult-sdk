@@ -12,44 +12,47 @@ export class HttpClient {
     }
   }
 
-  setHeader(key: string, value: string): void {
-    this.headers[key] = value
-  }
-
-  removeHeader(key: string): void {
-    delete this.headers[key]
-  }
-
   async get<T>(path: string, params?: Record<string, string>): Promise<PultResponse<T>> {
-    const url = this.buildUrl(path, params)
-    return this.request<T>(url, { method: "GET" })
+    return this.request<T>(this.buildUrl(path, params), { method: "GET" })
   }
 
   async post<T>(path: string, body?: unknown): Promise<PultResponse<T>> {
-    const url = this.buildUrl(path)
-    return this.request<T>(url, {
+    return this.request<T>(this.buildUrl(path), {
       method: "POST",
       body: body !== undefined ? JSON.stringify(body) : undefined,
     })
   }
 
   async patch<T>(path: string, body?: unknown): Promise<PultResponse<T>> {
-    const url = this.buildUrl(path)
-    return this.request<T>(url, {
+    return this.request<T>(this.buildUrl(path), {
       method: "PATCH",
       body: body !== undefined ? JSON.stringify(body) : undefined,
     })
   }
 
-  async delete<T>(path: string): Promise<PultResponse<T>> {
-    const url = this.buildUrl(path)
-    return this.request<T>(url, { method: "DELETE" })
+  async del<T>(path: string): Promise<PultResponse<T>> {
+    return this.request<T>(this.buildUrl(path), { method: "DELETE" })
   }
 
-  async upload<T>(path: string, file: Blob | ArrayBuffer, contentType: string): Promise<PultResponse<T>> {
+  streamSSE(path: string, onData: (data: string) => void, onDone?: () => void, onError?: (err: string) => void): { close: () => void } {
     const url = this.buildUrl(path)
-    const headers = { ...this.headers, "Content-Type": contentType }
-    return this.request<T>(url, { method: "POST", body: file, headers })
+    const eventSource = new EventSource(url)
+
+    eventSource.onmessage = (event) => onData(event.data)
+    eventSource.addEventListener("done", () => {
+      eventSource.close()
+      onDone?.()
+    })
+    eventSource.addEventListener("error", (event) => {
+      eventSource.close()
+      onError?.(event instanceof MessageEvent ? event.data : "connection lost")
+    })
+    eventSource.onerror = () => {
+      eventSource.close()
+      onError?.("connection lost")
+    }
+
+    return { close: () => eventSource.close() }
   }
 
   private buildUrl(path: string, params?: Record<string, string>): string {
@@ -62,24 +65,28 @@ export class HttpClient {
     return url.toString()
   }
 
-  private async request<T>(url: string, init: RequestInit & { headers?: Record<string, string> }): Promise<PultResponse<T>> {
-    const headers = init.headers ?? this.headers
-
+  private async request<T>(url: string, init: RequestInit): Promise<PultResponse<T>> {
     try {
-      const response = await fetch(url, { ...init, headers })
+      const response = await fetch(url, { ...init, headers: this.headers })
 
       if (!response.ok) {
-        const error = await this.parseError(response)
-        return { data: null, error }
+        return { data: null, error: await this.parseError(response) }
+      }
+
+      if (response.status === 204 || response.headers.get("content-length") === "0") {
+        return { data: null as T, error: null }
       }
 
       const data = (await response.json()) as T
       return { data, error: null }
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Unknown error"
       return {
         data: null,
-        error: { message, code: "NETWORK_ERROR", status: 0 },
+        error: {
+          message: err instanceof Error ? err.message : "Unknown error",
+          code: "NETWORK_ERROR",
+          status: 0,
+        },
       }
     }
   }
@@ -88,16 +95,12 @@ export class HttpClient {
     try {
       const body = (await response.json()) as Record<string, unknown>
       return {
-        message: typeof body["message"] === "string" ? body["message"] : response.statusText,
-        code: typeof body["code"] === "string" ? body["code"] : `HTTP_${response.status}`,
-        status: response.status,
-      }
-    } catch {
-      return {
-        message: response.statusText,
+        message: typeof body["error"] === "string" ? body["error"] : response.statusText,
         code: `HTTP_${response.status}`,
         status: response.status,
       }
+    } catch {
+      return { message: response.statusText, code: `HTTP_${response.status}`, status: response.status }
     }
   }
 }
