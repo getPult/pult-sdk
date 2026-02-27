@@ -16,6 +16,8 @@ export function createAuthClient(options: AuthClientOptions): AuthClient {
 }
 
 export { createRealtimeClient, RealtimeClient } from "./realtime"
+export { createRedisClient, RedisClient } from "./redis"
+export { createQueueClient, QueueClient } from "./queue"
 
 export { PultClient } from "./client"
 export { DbClient, QueryBuilder } from "./db"
@@ -29,6 +31,7 @@ export { DatabasesClient } from "./databases"
 export { GitClient } from "./git"
 export { StorageClient } from "./storage"
 export { RealtimeAdminClient } from "./realtime-admin"
+export { RedisAdminClient } from "./redis-admin"
 export type {
   PultClientOptions,
   DbClientOptions,
@@ -81,4 +84,12 @@ export type {
   PostgresChangeFilter,
   ChannelSubscription,
   PresenceState,
+  RedisInstance,
+  RedisClientOptions,
+  RedisCommandRequest,
+  RedisCommandResponse,
+  QueueClientOptions,
+  QueueJob,
+  AddJobRequest,
+  QueueStats,
 } from "./types"
