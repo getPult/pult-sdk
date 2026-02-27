@@ -6,6 +6,7 @@ import { EnvClient } from "./env"
 import { GitClient } from "./git"
 import { HttpClient } from "./http"
 import { LogsClient } from "./logs"
+import { RealtimeAdminClient } from "./realtime-admin"
 import { StorageClient } from "./storage"
 import type { PultClientOptions, PultResponse, StatusResponse } from "./types"
 
@@ -18,6 +19,7 @@ export class PultClient {
   readonly databases: DatabasesClient
   readonly git: GitClient
   readonly storage: StorageClient
+  readonly realtime: RealtimeAdminClient
 
   private http: HttpClient
 
@@ -36,6 +38,7 @@ export class PultClient {
     this.databases = new DatabasesClient(this.http)
     this.git = new GitClient(this.http)
     this.storage = new StorageClient(this.http)
+    this.realtime = new RealtimeAdminClient(this.http)
   }
 
   async health(): Promise<PultResponse<StatusResponse>> {
