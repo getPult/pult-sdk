@@ -353,3 +353,60 @@ export interface ChannelSubscription {
 export interface PresenceState {
   [key: string]: Record<string, unknown>
 }
+
+export interface RedisInstance {
+  id: string
+  app_id: string
+  endpoint: string
+  status: "provisioning" | "ready" | "error" | "deleting"
+  max_memory_mb: number
+  error_message?: string
+  created_at: string
+  updated_at: string
+}
+
+export interface RedisClientOptions {
+  url: string
+  token: string
+}
+
+export interface RedisCommandRequest {
+  cmd: string[]
+}
+
+export interface RedisCommandResponse {
+  result: unknown
+}
+
+export interface QueueClientOptions {
+  url: string
+  token: string
+  queueName?: string
+}
+
+export interface QueueJob {
+  id: string
+  name: string
+  data: unknown
+  status: "waiting" | "active" | "delayed" | "completed" | "failed"
+  attempts: number
+  max_attempts: number
+  created_at: number
+  processed_at?: number
+  finished_at?: number
+}
+
+export interface AddJobRequest {
+  name: string
+  data: unknown
+  delay?: number
+  attempts?: number
+}
+
+export interface QueueStats {
+  waiting: number
+  active: number
+  delayed: number
+  completed: number
+  failed: number
+}
