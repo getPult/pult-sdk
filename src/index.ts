@@ -15,6 +15,8 @@ export function createAuthClient(options: AuthClientOptions): AuthClient {
   return new AuthClient(options)
 }
 
+export { createRealtimeClient, RealtimeClient } from "./realtime"
+
 export { PultClient } from "./client"
 export { DbClient, QueryBuilder } from "./db"
 export { AuthClient } from "./auth"
@@ -26,6 +28,7 @@ export { DomainsClient } from "./domains"
 export { DatabasesClient } from "./databases"
 export { GitClient } from "./git"
 export { StorageClient } from "./storage"
+export { RealtimeAdminClient } from "./realtime-admin"
 export type {
   PultClientOptions,
   DbClientOptions,
@@ -72,4 +75,10 @@ export type {
   PresignRequest,
   PresignResponse,
   UpdateStorageRequest,
+  RealtimeService,
+  RealtimeClientOptions,
+  RealtimeMessage,
+  PostgresChangeFilter,
+  ChannelSubscription,
+  PresenceState,
 } from "./types"
