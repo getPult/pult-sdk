@@ -284,3 +284,32 @@ export interface GitStatus {
   auto_deploy?: boolean
   created_at?: string
 }
+
+export interface StorageBucket {
+  id: string
+  app_id: string
+  bucket_name: string
+  endpoint: string
+  status: "provisioning" | "ready" | "error" | "deleting"
+  is_public: boolean
+  error_message?: string
+  created_at: string
+  updated_at: string
+}
+
+export interface PresignRequest {
+  key: string
+  method: "PUT" | "GET"
+  expiry?: number
+}
+
+export interface PresignResponse {
+  url: string
+  method: string
+  key: string
+  bucket: string
+}
+
+export interface UpdateStorageRequest {
+  is_public: boolean
+}
