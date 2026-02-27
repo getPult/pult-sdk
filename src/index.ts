@@ -25,6 +25,7 @@ export { EnvClient } from "./env"
 export { DomainsClient } from "./domains"
 export { DatabasesClient } from "./databases"
 export { GitClient } from "./git"
+export { StorageClient } from "./storage"
 export type {
   PultClientOptions,
   DbClientOptions,
@@ -67,4 +68,8 @@ export type {
   GraphQLRequest,
   GraphQLResponse,
   GraphQLError,
+  StorageBucket,
+  PresignRequest,
+  PresignResponse,
+  UpdateStorageRequest,
 } from "./types"
