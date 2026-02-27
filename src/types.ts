@@ -313,3 +313,43 @@ export interface PresignResponse {
 export interface UpdateStorageRequest {
   is_public: boolean
 }
+
+export interface RealtimeService {
+  id: string
+  app_id: string
+  status: "provisioning" | "ready" | "error" | "deleting"
+  endpoint?: string
+  error_message?: string
+  created_at: string
+  updated_at: string
+}
+
+export interface RealtimeClientOptions {
+  url: string
+  token: string
+}
+
+export interface RealtimeMessage {
+  type: string
+  channel?: string
+  event?: string
+  payload?: unknown
+  ref?: string
+}
+
+export interface PostgresChangeFilter {
+  event?: string
+  schema?: string
+  table?: string
+}
+
+export interface ChannelSubscription {
+  channel: string
+  on(event: string, callback: (payload: unknown) => void): ChannelSubscription
+  subscribe(): void
+  unsubscribe(): void
+}
+
+export interface PresenceState {
+  [key: string]: Record<string, unknown>
+}
