@@ -1,7 +1,6 @@
 import type {
   ChannelSubscription,
   PostgresChangeFilter,
-  PresenceState,
   RealtimeClientOptions,
   RealtimeMessage,
 } from "./types"
