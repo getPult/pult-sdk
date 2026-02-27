@@ -6,6 +6,7 @@ import { EnvClient } from "./env"
 import { GitClient } from "./git"
 import { HttpClient } from "./http"
 import { LogsClient } from "./logs"
+import { StorageClient } from "./storage"
 import type { PultClientOptions, PultResponse, StatusResponse } from "./types"
 
 export class PultClient {
@@ -16,6 +17,7 @@ export class PultClient {
   readonly domains: DomainsClient
   readonly databases: DatabasesClient
   readonly git: GitClient
+  readonly storage: StorageClient
 
   private http: HttpClient
 
@@ -33,6 +35,7 @@ export class PultClient {
     this.domains = new DomainsClient(this.http)
     this.databases = new DatabasesClient(this.http)
     this.git = new GitClient(this.http)
+    this.storage = new StorageClient(this.http)
   }
 
   async health(): Promise<PultResponse<StatusResponse>> {
