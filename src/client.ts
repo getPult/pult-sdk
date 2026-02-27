@@ -7,6 +7,7 @@ import { GitClient } from "./git"
 import { HttpClient } from "./http"
 import { LogsClient } from "./logs"
 import { RealtimeAdminClient } from "./realtime-admin"
+import { RedisAdminClient } from "./redis-admin"
 import { StorageClient } from "./storage"
 import type { PultClientOptions, PultResponse, StatusResponse } from "./types"
 
@@ -20,6 +21,7 @@ export class PultClient {
   readonly git: GitClient
   readonly storage: StorageClient
   readonly realtime: RealtimeAdminClient
+  readonly redis: RedisAdminClient
 
   private http: HttpClient
 
@@ -39,6 +41,7 @@ export class PultClient {
     this.git = new GitClient(this.http)
     this.storage = new StorageClient(this.http)
     this.realtime = new RealtimeAdminClient(this.http)
+    this.redis = new RedisAdminClient(this.http)
   }
 
   async health(): Promise<PultResponse<StatusResponse>> {
