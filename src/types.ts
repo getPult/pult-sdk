@@ -5,7 +5,7 @@ export interface PultClientOptions {
 }
 
 export interface DbClientOptions {
-  url: string
+  url?: string
   apiKey?: string
   headers?: Record<string, string>
 }
@@ -190,7 +190,7 @@ export interface LogLine {
 }
 
 export interface AuthClientOptions {
-  url: string
+  url?: string
   headers?: Record<string, string>
 }
 
@@ -325,8 +325,8 @@ export interface RealtimeService {
 }
 
 export interface RealtimeClientOptions {
-  url: string
-  token: string
+  url?: string
+  token?: string
 }
 
 export interface RealtimeMessage {
@@ -366,8 +366,8 @@ export interface RedisInstance {
 }
 
 export interface RedisClientOptions {
-  url: string
-  token: string
+  url?: string
+  token?: string
 }
 
 export interface RedisCommandRequest {
@@ -379,8 +379,8 @@ export interface RedisCommandResponse {
 }
 
 export interface QueueClientOptions {
-  url: string
-  token: string
+  url?: string
+  token?: string
   queueName?: string
 }
 
