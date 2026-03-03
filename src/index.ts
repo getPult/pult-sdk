@@ -7,11 +7,11 @@ export function createClient(options: PultClientOptions): PultClient {
   return new PultClient(options)
 }
 
-export function createDbClient(options: DbClientOptions): DbClient {
+export function createDbClient(options: DbClientOptions = {}): DbClient {
   return new DbClient(options)
 }
 
-export function createAuthClient(options: AuthClientOptions): AuthClient {
+export function createAuthClient(options: AuthClientOptions = {}): AuthClient {
   return new AuthClient(options)
 }
 
