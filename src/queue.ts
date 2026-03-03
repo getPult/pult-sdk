@@ -1,3 +1,4 @@
+import { readEnv, requireEnv } from "./runtime"
 import type {
   AddJobRequest,
   QueueClientOptions,
@@ -10,11 +11,13 @@ export class QueueClient {
   private headers: Record<string, string>
   private queueName: string
 
-  constructor(options: QueueClientOptions) {
-    this.url = options.url.replace(/\/+$/, "")
+  constructor(options: QueueClientOptions = {}) {
+    const url = options.url ?? requireEnv("PULT_REDIS_URL")
+    const token = options.token ?? readEnv("PULT_JWT_SECRET") ?? ""
+    this.url = url.replace(/\/+$/, "")
     this.headers = {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${options.token}`,
+      "Authorization": `Bearer ${token}`,
     }
     this.queueName = options.queueName ?? "default"
   }
