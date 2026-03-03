@@ -10,7 +10,7 @@ function readEnv(key: string): string | undefined {
 
 function requireEnv(key: string): string {
   const value = readEnv(key)
-  if (value) return value
+  if (value !== undefined) return value
   throw new Error(
     `Missing environment variable: ${key}. Pass the url explicitly or deploy on Pult.`,
   )
