@@ -67,7 +67,7 @@ export class RealtimeClient {
   constructor(options: RealtimeClientOptions = {}) {
     const url = options.url ?? requireEnv("PULT_REALTIME_URL")
     this.url = url.replace(/^http/, "ws")
-    this.token = options.token ?? readEnv("PULT_JWT_SECRET") ?? ""
+    this.token = options.token ?? readEnv("PULT_ANON_KEY") ?? readEnv("PULT_JWT_SECRET") ?? ""
   }
 
   connect(): void {
