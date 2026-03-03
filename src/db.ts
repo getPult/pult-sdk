@@ -1,15 +1,17 @@
 import { HttpClient } from "./http"
+import { requireEnv } from "./runtime"
 import type { DbClientOptions, GraphQLResponse, PultResponse } from "./types"
 
 export class DbClient {
   private http: HttpClient
 
-  constructor(options: DbClientOptions) {
+  constructor(options: DbClientOptions = {}) {
+    const url = options.url ?? requireEnv("PULT_DB_URL")
     const headers: Record<string, string> = { ...options.headers }
     if (options.apiKey) {
       headers["Authorization"] = `Bearer ${options.apiKey}`
     }
-    this.http = new HttpClient(options.url, headers)
+    this.http = new HttpClient(url, headers)
   }
 
   from<T = Record<string, unknown>>(table: string): QueryBuilder<T> {
