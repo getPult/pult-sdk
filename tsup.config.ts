@@ -1,12 +1,19 @@
 import { defineConfig } from "tsup"
 
 export default defineConfig({
-  entry: ["src/index.ts"],
+  entry: {
+    index: "src/index.ts",
+    db: "src/db.ts",
+    auth: "src/auth.ts",
+    realtime: "src/realtime.ts",
+    redis: "src/redis.ts",
+    queue: "src/queue.ts",
+  },
   format: ["esm", "cjs"],
   dts: true,
   clean: true,
   sourcemap: true,
   minify: false,
   target: "es2020",
-  splitting: false,
+  splitting: true,
 })
