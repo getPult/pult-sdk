@@ -1,4 +1,5 @@
 import { HttpClient } from "./http"
+import { requireEnv } from "./runtime"
 import type {
   AuthClientOptions,
   AuthSession,
@@ -17,9 +18,10 @@ export class AuthClient {
   private session: AuthSession | null = null
   private listeners: Set<AuthStateListener> = new Set()
 
-  constructor(options: AuthClientOptions) {
+  constructor(options: AuthClientOptions = {}) {
+    const url = options.url ?? requireEnv("PULT_AUTH_URL")
     const headers: Record<string, string> = { ...options.headers }
-    this.http = new HttpClient(options.url, headers)
+    this.http = new HttpClient(url, headers)
   }
 
   async signUp(req: SignUpRequest): Promise<PultResponse<AuthUser>> {
