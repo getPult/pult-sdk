@@ -1,3 +1,4 @@
+import { readEnv, requireEnv } from "./runtime"
 import type {
   ChannelSubscription,
   PostgresChangeFilter,
@@ -63,9 +64,10 @@ export class RealtimeClient {
   private onCloseCallbacks: (() => void)[] = []
   private onErrorCallbacks: ((error: Event) => void)[] = []
 
-  constructor(options: RealtimeClientOptions) {
-    this.url = options.url.replace(/^http/, "ws")
-    this.token = options.token
+  constructor(options: RealtimeClientOptions = {}) {
+    const url = options.url ?? requireEnv("PULT_REALTIME_URL")
+    this.url = url.replace(/^http/, "ws")
+    this.token = options.token ?? readEnv("PULT_JWT_SECRET") ?? ""
   }
 
   connect(): void {
