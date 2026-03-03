@@ -1,3 +1,4 @@
+import { readEnv, requireEnv } from "./runtime"
 import type {
   RedisClientOptions,
   RedisCommandResponse,
@@ -14,11 +15,13 @@ export class RedisClient {
   private url: string
   private headers: Record<string, string>
 
-  constructor(options: RedisClientOptions) {
-    this.url = options.url.replace(/\/+$/, "")
+  constructor(options: RedisClientOptions = {}) {
+    const url = options.url ?? requireEnv("PULT_REDIS_URL")
+    const token = options.token ?? readEnv("PULT_JWT_SECRET") ?? ""
+    this.url = url.replace(/\/+$/, "")
     this.headers = {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${options.token}`,
+      "Authorization": `Bearer ${token}`,
     }
   }
 
