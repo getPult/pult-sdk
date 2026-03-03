@@ -15,6 +15,12 @@ describe("readEnv", () => {
     delete process.env.NONEXISTENT_VAR
     expect(readEnv("NONEXISTENT_VAR")).toBeUndefined()
   })
+
+  it("returns empty string for env var set to empty string", () => {
+    process.env.TEST_EMPTY = ""
+    expect(readEnv("TEST_EMPTY")).toBe("")
+    delete process.env.TEST_EMPTY
+  })
 })
 
 describe("requireEnv", () => {
@@ -27,6 +33,12 @@ describe("requireEnv", () => {
   it("throws when env var is missing", () => {
     delete process.env.MISSING_VAR
     expect(() => requireEnv("MISSING_VAR")).toThrow("Missing environment variable: MISSING_VAR")
+  })
+
+  it("returns empty string for env var set to empty string", () => {
+    process.env.TEST_REQUIRE_EMPTY = ""
+    expect(requireEnv("TEST_REQUIRE_EMPTY")).toBe("")
+    delete process.env.TEST_REQUIRE_EMPTY
   })
 })
 
