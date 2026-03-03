@@ -11,6 +11,40 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
+    },
+    "./db": {
+      "types": "./dist/db.d.ts",
+      "import": "./dist/db.js",
+      "require": "./dist/db.cjs"
+    },
+    "./auth": {
+      "types": "./dist/auth.d.ts",
+      "import": "./dist/auth.js",
+      "require": "./dist/auth.cjs"
+    },
+    "./realtime": {
+      "types": "./dist/realtime.d.ts",
+      "import": "./dist/realtime.js",
+      "require": "./dist/realtime.cjs"
+    },
+    "./redis": {
+      "types": "./dist/redis.d.ts",
+      "import": "./dist/redis.js",
+      "require": "./dist/redis.cjs"
+    },
+    "./queue": {
+      "types": "./dist/queue.d.ts",
+      "import": "./dist/queue.js",
+      "require": "./dist/queue.cjs"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "db": ["dist/db.d.ts"],
+      "auth": ["dist/auth.d.ts"],
+      "realtime": ["dist/realtime.d.ts"],
+      "redis": ["dist/redis.d.ts"],
+      "queue": ["dist/queue.d.ts"]
     }
   },
   "files": [
