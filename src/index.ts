@@ -20,6 +20,7 @@ export { createRedisClient, RedisClient } from "./redis"
 export { createQueueClient, QueueClient } from "./queue"
 
 export { PultClient } from "./client"
+export { AnalyticsClient } from "./analytics"
 export { DbClient, QueryBuilder } from "./db"
 export { AuthClient } from "./auth"
 export { AppsClient } from "./apps"
@@ -92,4 +93,13 @@ export type {
   QueueJob,
   AddJobRequest,
   QueueStats,
+  AnalyticsOverview,
+  AnalyticsTimeSeries,
+  AnalyticsTopItem,
+  WebAnalytics,
+  RequestAnalytics,
+  AnalyticsLatencyBucket,
+  VitalScore,
+  VitalsOverview,
+  RealtimeVisitors,
 } from "./types"
