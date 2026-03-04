@@ -1,3 +1,4 @@
+import { AnalyticsClient } from "./analytics"
 import { AppsClient } from "./apps"
 import { DatabasesClient } from "./databases"
 import { DeploymentsClient } from "./deployments"
@@ -12,6 +13,7 @@ import { StorageClient } from "./storage"
 import type { PultClientOptions, PultResponse, StatusResponse } from "./types"
 
 export class PultClient {
+  readonly analytics: AnalyticsClient
   readonly apps: AppsClient
   readonly deployments: DeploymentsClient
   readonly logs: LogsClient
@@ -32,6 +34,7 @@ export class PultClient {
     }
 
     this.http = new HttpClient(options.url, headers)
+    this.analytics = new AnalyticsClient(this.http)
     this.apps = new AppsClient(this.http)
     this.deployments = new DeploymentsClient(this.http)
     this.logs = new LogsClient(this.http)
