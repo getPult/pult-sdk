@@ -410,3 +410,70 @@ export interface QueueStats {
   completed: number
   failed: number
 }
+
+export interface AnalyticsOverview {
+  visitors: number
+  pageviews: number
+  requests: number
+  errors: number
+  avg_latency_ms: number
+  bounce_rate: number
+  visitors_delta: number
+  requests_delta: number
+}
+
+export interface AnalyticsTimeSeries {
+  time: string
+  visitors: number
+  pageviews: number
+  requests: number
+  errors: number
+}
+
+export interface AnalyticsTopItem {
+  name: string
+  count: number
+}
+
+export interface WebAnalytics {
+  visitors: number
+  pageviews: number
+  top_pages: AnalyticsTopItem[]
+  top_referrers: AnalyticsTopItem[]
+  countries: AnalyticsTopItem[]
+  devices: AnalyticsTopItem[]
+  browsers: AnalyticsTopItem[]
+}
+
+export interface RequestAnalytics {
+  top_paths: AnalyticsTopItem[]
+  status_distribution: AnalyticsTopItem[]
+  latency_distribution: AnalyticsLatencyBucket[]
+  total_requests: number
+  total_errors: number
+  avg_latency_ms: number
+}
+
+export interface AnalyticsLatencyBucket {
+  bucket: string
+  count: number
+}
+
+export interface VitalScore {
+  p75: number
+  good: number
+  needs: number
+  poor: number
+}
+
+export interface VitalsOverview {
+  lcp: VitalScore
+  cls: VitalScore
+  inp: VitalScore
+  fcp: VitalScore
+  ttfb: VitalScore
+}
+
+export interface RealtimeVisitors {
+  live_visitors: number
+}
