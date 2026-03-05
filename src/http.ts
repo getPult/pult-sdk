@@ -34,6 +34,15 @@ export class HttpClient {
     return this.request<T>(this.buildUrl(path, params), { method: "DELETE" })
   }
 
+  async delete<T>(path: string, params?: Record<string, string>): Promise<PultResponse<T>> {
+    return this.del<T>(path, params)
+  }
+
+  async postForm<T>(path: string, form: FormData): Promise<PultResponse<T>> {
+    const { "Content-Type": _ct, ...headersWithoutContentType } = this.headers
+    return this.request<T>(this.buildUrl(path), { method: "POST", body: form }, headersWithoutContentType)
+  }
+
   streamSSE(path: string, onData: (data: string) => void, onDone?: () => void, onError?: (err: string) => void): { close: () => void } {
     const url = this.buildUrl(path)
     const eventSource = new EventSource(url)
