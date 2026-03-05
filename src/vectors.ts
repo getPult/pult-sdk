@@ -21,6 +21,14 @@ export interface VectorCollection {
   count: number
 }
 
+export interface IngestResult {
+  id: string
+  chunks: number
+  pages: number
+  mime_type: string
+  upserted: number
+}
+
 export class VectorsClient {
   private http: HttpClient
   private appId: string
@@ -41,6 +49,18 @@ export class VectorsClient {
 
   async delete(collection: string, ids: string[]): Promise<PultResponse<{ deleted: number }>> {
     return this.http.post<{ deleted: number }>(`/apps/${this.appId}/vectors/${encodeURIComponent(collection)}/delete`, { ids })
+  }
+
+  async ingest(collection: string, file: File | Blob, options?: { id?: string; metadata?: Record<string, unknown> }): Promise<PultResponse<IngestResult>> {
+    const form = new FormData()
+    form.append("file", file, file instanceof File ? file.name : "document")
+    if (options?.id) form.append("id", options.id)
+    if (options?.metadata) form.append("metadata", JSON.stringify(options.metadata))
+    return this.http.postForm<IngestResult>(`/apps/${this.appId}/vectors/${encodeURIComponent(collection)}/ingest`, form)
+  }
+
+  async dropCollection(collection: string): Promise<PultResponse<{ status: string }>> {
+    return this.http.delete<{ status: string }>(`/apps/${this.appId}/vectors/${encodeURIComponent(collection)}`)
   }
 
   async collections(): Promise<PultResponse<VectorCollection[]>> {
