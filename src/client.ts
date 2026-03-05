@@ -1,3 +1,4 @@
+import { AIClient } from "./ai"
 import { AnalyticsClient } from "./analytics"
 import { AppsClient } from "./apps"
 import { DatabasesClient } from "./databases"
@@ -10,9 +11,11 @@ import { LogsClient } from "./logs"
 import { RealtimeAdminClient } from "./realtime-admin"
 import { RedisAdminClient } from "./redis-admin"
 import { StorageClient } from "./storage"
+import { VectorsClient } from "./vectors"
 import type { PultClientOptions, PultResponse, StatusResponse } from "./types"
 
 export class PultClient {
+  readonly ai: AIClient
   readonly analytics: AnalyticsClient
   readonly apps: AppsClient
   readonly deployments: DeploymentsClient
@@ -24,16 +27,18 @@ export class PultClient {
   readonly storage: StorageClient
   readonly realtime: RealtimeAdminClient
   readonly redis: RedisAdminClient
+  readonly vectors: VectorsClient
 
   private http: HttpClient
 
-  constructor(options: PultClientOptions) {
+  constructor(options: PultClientOptions & { appId?: string }) {
     const headers: Record<string, string> = { ...options.headers }
     if (options.apiKey) {
       headers["Authorization"] = `Bearer ${options.apiKey}`
     }
 
     this.http = new HttpClient(options.url, headers)
+    this.ai = new AIClient(this.http, options.appId || "", options.url, options.apiKey || "")
     this.analytics = new AnalyticsClient(this.http)
     this.apps = new AppsClient(this.http)
     this.deployments = new DeploymentsClient(this.http)
@@ -45,6 +50,7 @@ export class PultClient {
     this.storage = new StorageClient(this.http)
     this.realtime = new RealtimeAdminClient(this.http)
     this.redis = new RedisAdminClient(this.http)
+    this.vectors = new VectorsClient(this.http, options.appId || "")
   }
 
   async health(): Promise<PultResponse<StatusResponse>> {
