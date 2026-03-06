@@ -13,11 +13,15 @@ export class EnvClient {
     return this.http.post<EnvVarResult[]>(path, vars)
   }
 
-  async list(appId: string, options?: { decrypt?: boolean; environment?: string }): Promise<PultResponse<EnvVar[]>> {
+  async list(appId: string, options?: { environment?: string }): Promise<PultResponse<EnvVar[]>> {
     const params: Record<string, string> = {}
-    if (options?.decrypt) params["decrypt"] = "true"
     if (options?.environment) params["env"] = options.environment
     return this.http.get<EnvVar[]>(`/apps/${appId}/env`, Object.keys(params).length > 0 ? params : undefined)
+  }
+
+  async reveal(appId: string, key: string, environment?: string): Promise<PultResponse<{ key: string; value: string }>> {
+    const envParam = environment ? `?env=${encodeURIComponent(environment)}` : ""
+    return this.http.get<{ key: string; value: string }>(`/apps/${appId}/env/${encodeURIComponent(key)}/reveal${envParam}`)
   }
 
   async delete(appId: string, key: string, environment?: string): Promise<PultResponse<DeletedResponse>> {
