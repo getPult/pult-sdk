@@ -26,16 +26,21 @@ export type { ChatChunk } from "./ai-stream"
 export { VectorsClient } from "./vectors"
 export type { VectorRecord, VectorSearchResult, VectorCollection } from "./vectors"
 export { AnalyticsClient } from "./analytics"
+export { BillingClient } from "./billing"
+export { CronClient } from "./cron"
 export { DbClient, QueryBuilder } from "./db"
 export { AuthClient } from "./auth"
 export { AppsClient } from "./apps"
 export { DeploymentsClient } from "./deployments"
+export { EnvironmentsClient } from "./environments"
 export { LogsClient } from "./logs"
 export { EnvClient } from "./env"
 export { DomainsClient } from "./domains"
 export { DatabasesClient } from "./databases"
 export { GitClient } from "./git"
+export { ServicesClient } from "./services"
 export { StorageClient } from "./storage"
+export { TeamsClient } from "./teams"
 export { RealtimeAdminClient } from "./realtime-admin"
 export { RedisAdminClient } from "./redis-admin"
 export type {
@@ -107,4 +112,28 @@ export type {
   VitalScore,
   VitalsOverview,
   RealtimeVisitors,
+  Team,
+  CreateTeamRequest,
+  UpdateTeamRequest,
+  TeamMember,
+  AddTeamMemberRequest,
+  AddTeamMemberResponse,
+  UpdateMemberRoleResponse,
+  TeamInvite,
+  AcceptInviteResponse,
+  BillingStatus,
+  PlanLimits,
+  Subscription,
+  StripeSubscription,
+  StripeInvoice,
+  BillingUsage,
+  CheckoutResponse,
+  PortalResponse,
+  Service,
+  CreateServiceRequest,
+  UpdateServiceRequest,
+  Environment,
+  CreateEnvironmentRequest,
+  CronJob,
+  CreateCronJobRequest,
 } from "./types"
