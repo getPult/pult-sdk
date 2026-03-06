@@ -22,12 +22,16 @@ export class DatabasesClient {
   }
 
   async create(appId: string, req?: CreateDatabaseRequest): Promise<PultResponse<ManagedDatabase>> {
-    return this.http.post<ManagedDatabase>(`/apps/${appId}/database`, req ?? {})
+    const result = await this.http.post<{ database: ManagedDatabase }>(`/apps/${appId}/database`, req ?? {})
+    if (result.error) return { data: null, error: result.error }
+    return { data: result.data?.database ?? null, error: null }
   }
 
   async get(appId: string, secret = false): Promise<PultResponse<ManagedDatabase>> {
     const params = secret ? { secret: "true" } : undefined
-    return this.http.get<ManagedDatabase>(`/apps/${appId}/database`, params)
+    const result = await this.http.get<{ database: ManagedDatabase }>(`/apps/${appId}/database`, params)
+    if (result.error) return { data: null, error: result.error }
+    return { data: result.data?.database ?? null, error: null }
   }
 
   async delete(appId: string): Promise<PultResponse<DeletedResponse>> {
