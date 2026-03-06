@@ -40,11 +40,21 @@
   },
   "typesVersions": {
     "*": {
-      "db": ["dist/db.d.ts"],
-      "auth": ["dist/auth.d.ts"],
-      "realtime": ["dist/realtime.d.ts"],
-      "redis": ["dist/redis.d.ts"],
-      "queue": ["dist/queue.d.ts"]
+      "db": [
+        "dist/db.d.ts"
+      ],
+      "auth": [
+        "dist/auth.d.ts"
+      ],
+      "realtime": [
+        "dist/realtime.d.ts"
+      ],
+      "redis": [
+        "dist/redis.d.ts"
+      ],
+      "queue": [
+        "dist/queue.d.ts"
+      ]
     }
   },
   "files": [
@@ -77,6 +87,7 @@
   },
   "homepage": "https://pult.rest",
   "devDependencies": {
+    "@types/react": "^19.2.14",
     "tsup": "^8.0.0",
     "typescript": "^5.4.0",
     "vitest": "^2.0.0"
