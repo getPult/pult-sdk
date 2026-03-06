@@ -13,11 +13,15 @@ export class RealtimeAdminClient {
   }
 
   async enable(appId: string): Promise<PultResponse<RealtimeService>> {
-    return this.http.post<RealtimeService>(`/apps/${appId}/realtime/enable`)
+    const result = await this.http.post<{ realtime: RealtimeService }>(`/apps/${appId}/realtime/enable`)
+    if (result.error) return { data: null, error: result.error }
+    return { data: result.data?.realtime ?? null, error: null }
   }
 
   async status(appId: string): Promise<PultResponse<RealtimeService>> {
-    return this.http.get<RealtimeService>(`/apps/${appId}/realtime/status`)
+    const result = await this.http.get<{ realtime: RealtimeService }>(`/apps/${appId}/realtime/status`)
+    if (result.error) return { data: null, error: result.error }
+    return { data: result.data?.realtime ?? null, error: null }
   }
 
   async disable(appId: string): Promise<PultResponse<DeletedResponse>> {
