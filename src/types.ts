@@ -21,14 +21,31 @@ export interface PultError {
   status: number
 }
 
+export interface AppRegion {
+  id: string
+  app_id: string
+  region: string
+  status: string
+  created_at: string
+  updated_at: string
+}
+
 export interface App {
   id: string
   name: string
   owner_id: string
   repo?: string
+  root_dir?: string
   framework?: string
+  primary_region?: string
   region: string
+  regions?: AppRegion[]
   status: "active" | "paused" | "deleted"
+  has_database?: boolean
+  has_storage?: boolean
+  has_redis?: boolean
+  has_realtime?: boolean
+  services?: Service[]
   created_at: string
   updated_at: string
 }
@@ -43,9 +60,15 @@ export interface CreateAppRequest {
 export interface Deployment {
   id: string
   app_id: string
+  app_name?: string
+  environment_id?: string
+  environment_name?: string
   image?: string
   status: "pending" | "building" | "deploying" | "ready" | "failed"
   commit_sha?: string
+  branch?: string
+  region?: string
+  duration_ms?: number
   logs?: string
   created_at: string
   updated_at: string
@@ -60,6 +83,7 @@ export interface EnvVar {
   app_id: string
   key: string
   value: string
+  is_system?: boolean
   environment: string
   created_at: string
   updated_at: string
@@ -114,7 +138,10 @@ export interface ManagedDatabase {
   port: number
   username?: string
   status: "provisioning" | "ready" | "error" | "deleting"
-  size: string
+  size: number | string
+  version?: string
+  connections?: number
+  max_connections?: number
   region: string
   error_message?: string
   connection_string?: string
@@ -288,10 +315,13 @@ export interface GitStatus {
 export interface StorageBucket {
   id: string
   app_id: string
-  bucket_name: string
   endpoint: string
   status: "provisioning" | "ready" | "error" | "deleting"
   is_public: boolean
+  bucket_count?: number
+  file_count?: number
+  total_size?: number
+  bandwidth_used?: number
   error_message?: string
   created_at: string
   updated_at: string
@@ -315,13 +345,17 @@ export interface UpdateStorageRequest {
 }
 
 export interface RealtimeService {
-  id: string
-  app_id: string
-  status: "provisioning" | "ready" | "error" | "deleting"
+  id?: string
+  app_id?: string
+  status: string
+  enabled?: boolean
   endpoint?: string
+  channels?: number
+  connections?: number
+  messages_per_sec?: number
   error_message?: string
-  created_at: string
-  updated_at: string
+  created_at?: string
+  updated_at?: string
 }
 
 export interface RealtimeClientOptions {
@@ -357,6 +391,7 @@ export interface PresenceState {
 export interface RedisInstance {
   id: string
   app_id: string
+  environment_id?: string
   endpoint: string
   status: "provisioning" | "ready" | "error" | "deleting"
   max_memory_mb: number
@@ -417,8 +452,11 @@ export interface AnalyticsOverview {
   requests: number
   errors: number
   avg_latency_ms: number
+  avg_duration_ms?: number
   bounce_rate: number
   visitors_delta: number
+  pageviews_delta?: number
+  bounce_rate_delta?: number
   requests_delta: number
 }
 
