@@ -580,8 +580,8 @@ export interface BillingStatus {
   plan: string
   limits: PlanLimits
   usage: { apps: number }
-  subscription: Subscription | null
-  grace_period: {
+  subscription?: Subscription | null
+  grace_period?: {
     active: boolean
     ends_at: string
     message: string
@@ -594,7 +594,7 @@ export interface PlanLimits {
   max_ram_mb: number
   max_db_mb: number
   max_storage_mb: number
-  regions: string[]
+  regions: string[] | null
   all_regions: boolean
   max_web_events_month: number
   analytics_retention_days: number
