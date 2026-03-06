@@ -51,7 +51,10 @@ export class HttpClient {
   }
 
   streamSSE(path: string, onData: (data: string) => void, onDone?: () => void, onError?: (err: string) => void): { close: () => void } {
-    const url = this.buildUrl(path)
+    const authHeader = this.headers["Authorization"] || ""
+    const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : ""
+    const params = token ? { token } : undefined
+    const url = this.buildUrl(path, params)
     const eventSource = new EventSource(url)
 
     eventSource.onmessage = (event) => onData(event.data)
