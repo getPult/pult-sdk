@@ -477,3 +477,239 @@ export interface VitalsOverview {
 export interface RealtimeVisitors {
   live_visitors: number
 }
+
+export interface Team {
+  id: string
+  name: string
+  owner_id: string
+  created_at: string
+  updated_at: string
+}
+
+export interface CreateTeamRequest {
+  name: string
+}
+
+export interface UpdateTeamRequest {
+  name: string
+}
+
+export interface TeamMember {
+  id: string
+  team_id: string
+  user_id: string
+  role: "owner" | "admin" | "member"
+  user_email: string
+  user_name: string
+  joined_at: string
+}
+
+export interface AddTeamMemberRequest {
+  email: string
+  role?: "admin" | "member"
+}
+
+export interface AddTeamMemberResponse {
+  status: "invited" | "created"
+  email: string
+  team_id: string
+  message: string
+}
+
+export interface UpdateMemberRoleResponse {
+  status: "updated"
+  role: string
+}
+
+export interface TeamInvite {
+  id: string
+  team_id: string
+  email: string
+  role: string
+  inviter_id: string
+  expires_at: string
+  created_at: string
+}
+
+export interface AcceptInviteResponse {
+  status: "joined" | "already_member"
+  team_id: string
+  team_name: string
+  role: string
+}
+
+export interface BillingStatus {
+  plan: string
+  limits: PlanLimits
+  usage: { apps: number }
+  subscription: Subscription | null
+  grace_period: {
+    active: boolean
+    ends_at: string
+    message: string
+    deploys_blocked: boolean
+  } | null
+}
+
+export interface PlanLimits {
+  max_apps: number
+  max_ram_mb: number
+  max_db_mb: number
+  max_storage_mb: number
+  regions: string[]
+  all_regions: boolean
+  max_web_events_month: number
+  analytics_retention_days: number
+  max_custom_event_keys: number
+  web_vitals: boolean
+  realtime_visitors: boolean
+  max_ai_requests_month: number
+  max_byok_providers: number
+  max_vector_dimensions: number
+  semantic_cache: boolean
+  managed_keys: boolean
+  failover_routing: boolean
+  ai_observ_retention_days: number
+  ai_rate_limit_rpm: number
+  ai_rate_limit_tpm: number
+}
+
+export interface Subscription {
+  id: string
+  user_id: string
+  stripe_subscription_id: string
+  stripe_customer_id: string
+  plan: string
+  status: string
+  interval: string
+  current_period_start: string
+  current_period_end: string
+  cancel_at_period_end: boolean
+  grace_period_ends_at?: string
+  created_at: string
+  updated_at: string
+}
+
+export interface StripeSubscription {
+  id: string
+  plan: string
+  status: string
+  interval: string
+  current_period_end: number
+  cancel_at_period_end: boolean
+  created_at: number
+}
+
+export interface StripeInvoice {
+  id: string
+  amount: number
+  currency: string
+  status: string
+  period_start: number
+  period_end: number
+  pdf_url?: string
+  created_at: number
+}
+
+export interface BillingUsage {
+  usage: {
+    compute_hours: number
+    bandwidth_gb: number
+    storage_gb: number
+    database_gb: number
+    builds: number
+    apps: number
+  }
+}
+
+export interface CheckoutResponse {
+  checkout_url: string
+}
+
+export interface PortalResponse {
+  portal_url: string
+}
+
+export interface Service {
+  id: string
+  app_id: string
+  name: string
+  type: "web" | "api" | "worker" | "cron"
+  repo?: string
+  root_dir?: string
+  framework?: string
+  port: number
+  status: string
+  build_command?: string
+  start_command?: string
+  install_command?: string
+  output_dir?: string
+  runtime_version?: string
+  dockerfile_path?: string
+  created_at: string
+  updated_at: string
+}
+
+export interface CreateServiceRequest {
+  name: string
+  type?: "web" | "api" | "worker" | "cron"
+  repo?: string
+  root_dir?: string
+  port?: number
+  build_command?: string
+  start_command?: string
+  dockerfile_path?: string
+}
+
+export interface UpdateServiceRequest {
+  name?: string
+  port?: number
+  build_command?: string
+  start_command?: string
+  install_command?: string
+  output_dir?: string
+  runtime_version?: string
+  dockerfile_path?: string
+}
+
+export interface Environment {
+  id: string
+  app_id: string
+  name: string
+  slug: string
+  branch?: string
+  is_production: boolean
+  is_ephemeral: boolean
+  pr_number?: number
+  source_env_id?: string
+  status: string
+  has_database: boolean
+  has_auth: boolean
+  has_storage: boolean
+  has_redis: boolean
+  has_realtime: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface CreateEnvironmentRequest {
+  name: string
+  branch?: string
+  source_env_id?: string
+}
+
+export interface CronJob {
+  id: string
+  name: string
+  schedule: string
+  command: string
+  enabled: boolean
+  last_run_at?: string
+  created_at: string
+}
+
+export interface CreateCronJobRequest {
+  name: string
+  schedule: string
+  command: string
+}
