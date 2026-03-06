@@ -84,6 +84,16 @@ describe.skipIf(!API_KEY)("E2E: SDK against real API", () => {
         expect(v.created_at).toBeDefined()
       }
     })
+
+    it("set and delete env var lifecycle", async () => {
+      const key = `SDK_E2E_TEST_${Date.now()}`
+      const { data: setResult, error: setErr } = await pult.env.set(APP_ID, { [key]: "test-value" })
+      expect(setErr).toBeNull()
+      expect(Array.isArray(setResult)).toBe(true)
+
+      const { error: delErr } = await pult.env.delete(APP_ID, key)
+      expect(delErr).toBeNull()
+    })
   })
 
   describe("domains", () => {
@@ -199,6 +209,29 @@ describe.skipIf(!API_KEY)("E2E: SDK against real API", () => {
       const { data, error } = await pult.teams.list()
       expect(error).toBeNull()
       expect(Array.isArray(data)).toBe(true)
+    })
+
+    it("create, update, and delete team lifecycle", async () => {
+      const name = `sdk-e2e-${Date.now()}`
+      const { data: created, error: createErr } = await pult.teams.create({ name })
+      expect(createErr).toBeNull()
+      expect(created).toBeDefined()
+      expect(created!.name).toBe(name)
+      expect(created!.id).toBeDefined()
+
+      const teamId = created!.id
+
+      const { data: updated, error: updateErr } = await pult.teams.update(teamId, { name: `${name}-updated` })
+      expect(updateErr).toBeNull()
+      expect(updated!.name).toBe(`${name}-updated`)
+
+      const { data: members, error: membersErr } = await pult.teams.listMembers(teamId)
+      expect(membersErr).toBeNull()
+      expect(Array.isArray(members)).toBe(true)
+      expect(members!.length).toBeGreaterThanOrEqual(1)
+
+      const { error: deleteErr } = await pult.teams.delete(teamId)
+      expect(deleteErr).toBeNull()
     })
   })
 
