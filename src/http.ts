@@ -23,6 +23,13 @@ export class HttpClient {
     }, extraHeaders)
   }
 
+  async put<T>(path: string, body?: unknown, params?: Record<string, string>): Promise<PultResponse<T>> {
+    return this.request<T>(this.buildUrl(path, params), {
+      method: "PUT",
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+    })
+  }
+
   async patch<T>(path: string, body?: unknown, params?: Record<string, string>): Promise<PultResponse<T>> {
     return this.request<T>(this.buildUrl(path, params), {
       method: "PATCH",
