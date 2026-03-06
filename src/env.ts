@@ -9,8 +9,7 @@ export class EnvClient {
   }
 
   async set(appId: string, vars: SetEnvVarsRequest, environment?: string): Promise<PultResponse<EnvVarResult[]>> {
-    const params = environment ? { env: environment } : undefined
-    const path = params ? `/apps/${appId}/env?env=${encodeURIComponent(environment!)}` : `/apps/${appId}/env`
+    const path = environment ? `/apps/${appId}/env?env=${encodeURIComponent(environment)}` : `/apps/${appId}/env`
     return this.http.post<EnvVarResult[]>(path, vars)
   }
 
