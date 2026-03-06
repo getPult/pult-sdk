@@ -3,7 +3,6 @@ import type {
   BillingStatus,
   BillingUsage,
   CheckoutResponse,
-  DeletedResponse,
   PortalResponse,
   PultResponse,
   StatusResponse,
