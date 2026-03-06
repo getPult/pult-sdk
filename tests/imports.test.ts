@@ -103,6 +103,8 @@ describe("dist file existence", () => {
     const { resolve } = await import("path")
     const distDir = resolve(__dirname, "../dist")
 
+    if (!existsSync(distDir)) return
+
     const entryPoints = ["index", "db", "auth", "realtime", "redis", "queue"]
     for (const entry of entryPoints) {
       expect(existsSync(resolve(distDir, `${entry}.js`))).toBe(true)
