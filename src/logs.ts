@@ -8,8 +8,11 @@ export class LogsClient {
     this.http = http
   }
 
-  async get(appId: string): Promise<PultResponse<string[]>> {
-    return this.http.get<string[]>(`/apps/${appId}/logs`)
+  async get(appId: string, options?: { environment?: string; service?: string }): Promise<PultResponse<string[]>> {
+    const params: Record<string, string> = { format: "json" }
+    if (options?.environment) params["env"] = options.environment
+    if (options?.service) params["service"] = options.service
+    return this.http.get<string[]>(`/apps/${appId}/logs`, params)
   }
 
   stream(
