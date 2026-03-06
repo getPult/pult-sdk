@@ -88,6 +88,36 @@ export class RedisClient {
     return response.json() as Promise<RedisCommandResponse>
   }
 
+  async cached<T>(key: string, ttlSeconds: number, fn: () => Promise<T>): Promise<T> {
+    const existing = await this.get(key)
+    if (existing !== null && existing !== undefined) {
+      return (typeof existing === "string" ? JSON.parse(existing) : existing) as T
+    }
+    const value = await fn()
+    await this.set(key, JSON.stringify(value), { ex: ttlSeconds })
+    return value
+  }
+
+  async rateLimit(key: string, maxRequests: number, windowSeconds: number): Promise<{ allowed: boolean; remaining: number; reset: number }> {
+    const now = Math.floor(Date.now() / 1000)
+    const windowKey = `${key}:${Math.floor(now / windowSeconds)}`
+    const results = await this.pipeline([
+      ["INCR", windowKey],
+      ["TTL", windowKey],
+    ])
+    const count = results[0]?.result as number
+    const ttl = results[1]?.result as number
+    if (ttl < 0) {
+      await this.expire(windowKey, windowSeconds)
+    }
+    const reset = (Math.floor(now / windowSeconds) + 1) * windowSeconds
+    return {
+      allowed: count <= maxRequests,
+      remaining: Math.max(0, maxRequests - count),
+      reset,
+    }
+  }
+
   async pipeline(cmds: string[][]): Promise<RedisCommandResponse[]> {
     const body = cmds.map(cmd => ({ cmd }))
     const response = await fetch(`${this.url}/pipeline`, {
