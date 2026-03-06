@@ -8,6 +8,7 @@ export default defineConfig({
     realtime: "src/realtime.ts",
     redis: "src/redis.ts",
     queue: "src/queue.ts",
+    react: "src/react/index.ts",
   },
   format: ["esm", "cjs"],
   dts: true,
