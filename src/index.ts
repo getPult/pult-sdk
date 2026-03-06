@@ -50,6 +50,7 @@ export type {
   PultResponse,
   PultError,
   App,
+  AppRegion,
   CreateAppRequest,
   Deployment,
   CreateDeploymentRequest,
