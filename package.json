@@ -36,6 +36,11 @@
       "types": "./dist/queue.d.ts",
       "import": "./dist/queue.js",
       "require": "./dist/queue.cjs"
+    },
+    "./react": {
+      "types": "./dist/react.d.ts",
+      "import": "./dist/react.js",
+      "require": "./dist/react.cjs"
     }
   },
   "typesVersions": {
@@ -54,6 +59,9 @@
       ],
       "queue": [
         "dist/queue.d.ts"
+      ],
+      "react": [
+        "dist/react.d.ts"
       ]
     }
   },
@@ -86,6 +94,14 @@
     "url": "git+https://github.com/getPult/pult-sdk.git"
   },
   "homepage": "https://pult.rest",
+  "peerDependencies": {
+    "react": ">=18"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  },
   "devDependencies": {
     "@types/react": "^19.2.14",
     "tsup": "^8.0.0",
