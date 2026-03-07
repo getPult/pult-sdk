@@ -21,9 +21,13 @@ jobs:
       - run: npm test
 
   e2e:
-    name: E2E — Real API
+    name: E2E — ${{ matrix.suite }}
     needs: unit
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        suite: [core, auth, database, errors, plans, teams, concurrent]
     env:
       E2E_API_URL: https://api.pult.rest
       E2E_CP_TOKEN: ${{ secrets.E2E_CP_TOKEN }}
@@ -40,6 +44,6 @@ jobs:
           node-version: 20
       - run: npm install
       - run: npm run build
-      - name: Run E2E tests
-        run: npx vitest run tests/e2e.test.ts --reporter=verbose
+      - name: Run E2E — ${{ matrix.suite }}
+        run: npx vitest run tests/e2e/${{ matrix.suite }}.test.ts --reporter=verbose
         timeout-minutes: 20
