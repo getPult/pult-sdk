@@ -165,13 +165,14 @@ export interface DatabaseQueryResponse {
 }
 
 export interface Migration {
-  id: number
+  version: string
   name: string
   applied_at: string
 }
 
 export interface ApplyMigrationRequest {
-  name: string
+  version: string
+  name?: string
   sql: string
 }
 
