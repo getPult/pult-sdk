@@ -37,7 +37,6 @@ describe.skipIf(!TOKEN)("E2E: Full pipeline", () => {
   let pult: PultClient
   let appId: string
   let appName: string
-  let dbReady = false
 
   beforeAll(async () => {
     pult = client(TOKEN!)
@@ -121,11 +120,10 @@ describe.skipIf(!TOKEN)("E2E: Full pipeline", () => {
       expect(data!.status).toBe("ready")
       expect(typeof data!.port).toBe("number")
       expect(typeof data!.size).toBe("number")
-      dbReady = true
     })
 
     it("executes SQL query", async () => {
-      if (!dbReady) return
+
       const { data, error } = await pult.databases.query(appId, { sql: "SELECT 1 + 1 AS result" })
       expect(error).toBeNull()
       expect(data!.columns).toContain("result")
@@ -133,7 +131,7 @@ describe.skipIf(!TOKEN)("E2E: Full pipeline", () => {
     })
 
     it("creates table via migration", async () => {
-      if (!dbReady) return
+
       const { data, error } = await pult.databases.applyMigration(appId, {
         version: "001",
         name: "create_e2e_table",
@@ -149,7 +147,7 @@ describe.skipIf(!TOKEN)("E2E: Full pipeline", () => {
     })
 
     it("inserts and queries data via SQL", async () => {
-      if (!dbReady) return
+
       const { error: insertErr } = await pult.databases.query(appId, {
         sql: "INSERT INTO e2e_items (name, value) VALUES ('alpha', 10), ('beta', 20), ('gamma', 30)",
       })
@@ -165,7 +163,7 @@ describe.skipIf(!TOKEN)("E2E: Full pipeline", () => {
     })
 
     it("queries with WHERE filter", async () => {
-      if (!dbReady) return
+
       const { data, error } = await pult.databases.query(appId, {
         sql: "SELECT name FROM e2e_items WHERE value > 15 ORDER BY name",
       })
@@ -174,7 +172,7 @@ describe.skipIf(!TOKEN)("E2E: Full pipeline", () => {
     })
 
     it("list migrations includes the one we applied", async () => {
-      if (!dbReady) return
+
       const { data, error } = await pult.databases.listMigrations(appId)
       expect(error).toBeNull()
       const migration = data!.find((m: { version?: string }) => m.version === "001")
@@ -182,7 +180,7 @@ describe.skipIf(!TOKEN)("E2E: Full pipeline", () => {
     })
 
     it("list extensions returns array", async () => {
-      if (!dbReady) return
+
       const { data, error } = await pult.databases.listExtensions(appId)
       expect(error).toBeNull()
       expect(Array.isArray(data)).toBe(true)
@@ -194,7 +192,7 @@ describe.skipIf(!TOKEN)("E2E: Full pipeline", () => {
     })
 
     it("get database with secret returns connection string", async () => {
-      if (!dbReady) return
+
       const { data, error } = await pult.databases.get(appId, true)
       expect(error).toBeNull()
       expect(data!.connection_string).toBeDefined()
@@ -452,7 +450,7 @@ describe.skipIf(!TOKEN)("E2E: Full pipeline", () => {
     })
 
     it("create cron job", async () => {
-      if (!dbReady) return
+
       const { data, error } = await pult.cron.create(appId, {
         schedule: "0 0 * * *",
         command: "SELECT 1",
@@ -491,7 +489,7 @@ describe.skipIf(!TOKEN)("E2E: Full pipeline", () => {
     })
 
     it("delete nonexistent cron job returns error", async () => {
-      if (!dbReady) return
+
       const { error } = await pult.cron.delete(appId, "99999999")
       expect(error).not.toBeNull()
     })
@@ -797,7 +795,7 @@ describe.skipIf(!TOKEN)("E2E: Auth (GoTrue)", () => {
   })
 
   it("signUp creates a new user", async () => {
-    if (!authClient) return
+
     const { data, error } = await authClient.signUp({
       email: testEmail,
       password: testPassword,
@@ -808,7 +806,7 @@ describe.skipIf(!TOKEN)("E2E: Auth (GoTrue)", () => {
   })
 
   it("signIn before email confirmation fails", async () => {
-    if (!authClient) return
+
     const freshClient = createAuthClient({ url: authClient["http"]["baseUrl"] })
     const { data, error } = await freshClient.signIn({
       email: testEmail,
@@ -819,7 +817,7 @@ describe.skipIf(!TOKEN)("E2E: Auth (GoTrue)", () => {
   })
 
   it("confirms user email via DB", { timeout: 15000 }, async () => {
-    if (!authClient) return
+
     const sql = `UPDATE auth.users SET email_confirmed_at = NOW() WHERE email = '${testEmail}'`
     const res = await fetch(`${API_URL}/apps/${authAppId}/database/query?env=production`, {
       method: "POST",
@@ -833,7 +831,7 @@ describe.skipIf(!TOKEN)("E2E: Auth (GoTrue)", () => {
   })
 
   it("signIn returns session with tokens", async () => {
-    if (!authClient) return
+
     const { data, error } = await authClient.signIn({
       email: testEmail,
       password: testPassword,
@@ -848,7 +846,7 @@ describe.skipIf(!TOKEN)("E2E: Auth (GoTrue)", () => {
   })
 
   it("signIn with wrong password fails", async () => {
-    if (!authClient) return
+
     const freshClient = createAuthClient({ url: authClient["http"]["baseUrl"] })
     const { data, error } = await freshClient.signIn({
       email: testEmail,
@@ -859,7 +857,7 @@ describe.skipIf(!TOKEN)("E2E: Auth (GoTrue)", () => {
   })
 
   it("signIn with nonexistent email fails", async () => {
-    if (!authClient) return
+
     const freshClient = createAuthClient({ url: authClient["http"]["baseUrl"] })
     const { data, error } = await freshClient.signIn({
       email: "nobody-exists-here@fake.local",
@@ -870,7 +868,7 @@ describe.skipIf(!TOKEN)("E2E: Auth (GoTrue)", () => {
   })
 
   it("getUser returns current user profile", async () => {
-    if (!authClient) return
+
     const { data, error } = await authClient.getUser()
     expect(error).toBeNull()
     expect(data!.email).toBe(testEmail)
@@ -879,7 +877,7 @@ describe.skipIf(!TOKEN)("E2E: Auth (GoTrue)", () => {
   })
 
   it("updateUser updates metadata", async () => {
-    if (!authClient) return
+
     const { data, error } = await authClient.updateUser({
       data: { display_name: "E2E Tester" },
     })
@@ -888,7 +886,7 @@ describe.skipIf(!TOKEN)("E2E: Auth (GoTrue)", () => {
   })
 
   it("getSession returns active session", () => {
-    if (!authClient) return
+
     const session = authClient.getSession()
     expect(session).not.toBeNull()
     expect(session!.access_token).toBeDefined()
@@ -898,7 +896,7 @@ describe.skipIf(!TOKEN)("E2E: Auth (GoTrue)", () => {
   })
 
   it("refreshSession returns new tokens", async () => {
-    if (!authClient) return
+
     await sleep(1100)
     const oldSession = authClient.getSession()
     const { data, error } = await authClient.refreshSession()
@@ -908,7 +906,7 @@ describe.skipIf(!TOKEN)("E2E: Auth (GoTrue)", () => {
   })
 
   it("refreshSession without session fails", async () => {
-    if (!authClient) return
+
     const freshClient = createAuthClient({ url: authClient["http"]["baseUrl"] })
     const { data, error } = await freshClient.refreshSession()
     expect(data).toBeNull()
@@ -917,21 +915,21 @@ describe.skipIf(!TOKEN)("E2E: Auth (GoTrue)", () => {
   })
 
   it("signOut clears session", async () => {
-    if (!authClient) return
+
     const { error } = await authClient.signOut()
     expect(error).toBeNull()
     expect(authClient.getSession()).toBeNull()
   })
 
   it("signOut without session is idempotent", async () => {
-    if (!authClient) return
+
     const { data, error } = await authClient.signOut()
     expect(error).toBeNull()
     expect(data!.status).toBe("ok")
   })
 
   it("getUser fails after signOut", async () => {
-    if (!authClient) return
+
     const { data, error } = await authClient.getUser()
     expect(data).toBeNull()
     expect(error).toBeDefined()
@@ -939,14 +937,14 @@ describe.skipIf(!TOKEN)("E2E: Auth (GoTrue)", () => {
   })
 
   it("updateUser fails after signOut", async () => {
-    if (!authClient) return
+
     const { data, error } = await authClient.updateUser({ data: { foo: "bar" } })
     expect(data).toBeNull()
     expect(error!.code).toBe("NO_SESSION")
   })
 
   it("signIn again after signOut works", async () => {
-    if (!authClient) return
+
     const { data, error } = await authClient.signIn({
       email: testEmail,
       password: testPassword,
@@ -956,7 +954,7 @@ describe.skipIf(!TOKEN)("E2E: Auth (GoTrue)", () => {
   })
 
   it("onAuthStateChange fires on signIn", async () => {
-    if (!authClient) return
+
     const freshClient = createAuthClient({ url: authClient["http"]["baseUrl"] })
     let firedWith: unknown = "NOT_FIRED"
     const { unsubscribe } = freshClient.onAuthStateChange(session => {
@@ -969,7 +967,7 @@ describe.skipIf(!TOKEN)("E2E: Auth (GoTrue)", () => {
   })
 
   it("onAuthStateChange fires on signOut", async () => {
-    if (!authClient) return
+
     let firedWith: unknown = "NOT_FIRED"
     const { unsubscribe } = authClient.onAuthStateChange(session => {
       firedWith = session
@@ -981,7 +979,7 @@ describe.skipIf(!TOKEN)("E2E: Auth (GoTrue)", () => {
   })
 
   it("unsubscribe stops listener from firing", async () => {
-    if (!authClient) return
+
     const freshClient = createAuthClient({ url: authClient["http"]["baseUrl"] })
     let callCount = 0
     const { unsubscribe } = freshClient.onAuthStateChange(() => { callCount++ })
@@ -992,7 +990,7 @@ describe.skipIf(!TOKEN)("E2E: Auth (GoTrue)", () => {
   })
 
   it("multiple listeners all fire", async () => {
-    if (!authClient) return
+
     const freshClient = createAuthClient({ url: authClient["http"]["baseUrl"] })
     let count1 = 0
     let count2 = 0
@@ -1007,7 +1005,7 @@ describe.skipIf(!TOKEN)("E2E: Auth (GoTrue)", () => {
   })
 
   it("signUp duplicate email returns error", async () => {
-    if (!authClient) return
+
     const { data, error } = await authClient.signUp({
       email: testEmail,
       password: "AnotherPass123!",
@@ -1017,7 +1015,7 @@ describe.skipIf(!TOKEN)("E2E: Auth (GoTrue)", () => {
   })
 
   it("signUp with weak password returns error", async () => {
-    if (!authClient) return
+
     const { data, error } = await authClient.signUp({
       email: "weak-pass@test.local",
       password: "123",
