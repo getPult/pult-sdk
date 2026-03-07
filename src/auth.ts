@@ -52,13 +52,15 @@ export class AuthClient {
   }
 
   async signOut(): Promise<PultResponse<StatusResponse>> {
-    const headers = this.authHeaders()
-    if (!headers) {
+    if (!this.session) {
       this.setSession(null)
       return { data: { status: "ok" }, error: null }
     }
 
-    const result = await this.http.post<StatusResponse>("/auth/v1/logout")
+    const result = await new HttpClient(
+      this.http["baseUrl"],
+      { ...this.http["headers"], Authorization: `Bearer ${this.session.access_token}` },
+    ).post<StatusResponse>("/auth/v1/logout")
     this.setSession(null)
     return result
   }
@@ -133,8 +135,4 @@ export class AuthClient {
     }
   }
 
-  private authHeaders(): Record<string, string> | null {
-    if (!this.session) return null
-    return { Authorization: `Bearer ${this.session.access_token}` }
-  }
 }
