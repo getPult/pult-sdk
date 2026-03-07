@@ -16,9 +16,10 @@ export class StorageClient {
   }
 
   async create(appId: string): Promise<PultResponse<StorageBucket>> {
-    const result = await this.http.post<{ storage: StorageBucket }>(`/apps/${appId}/storage`)
+    const result = await this.http.post<StorageBucket & { storage?: StorageBucket }>(`/apps/${appId}/storage`)
     if (result.error) return { data: null, error: result.error }
-    return { data: result.data?.storage ?? null, error: null }
+    const raw = result.data
+    return { data: raw?.storage ?? raw ?? null, error: null }
   }
 
   async get(appId: string): Promise<PultResponse<StorageBucket>> {
