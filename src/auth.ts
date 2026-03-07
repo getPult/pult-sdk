@@ -90,7 +90,7 @@ export class AuthClient {
     return new HttpClient(
       this.http["baseUrl"],
       { ...this.http["headers"], Authorization: `Bearer ${this.session.access_token}` },
-    ).post<AuthUser>("/auth/v1/user", req)
+    ).put<AuthUser>("/auth/v1/user", req)
   }
 
   async refreshSession(): Promise<PultResponse<AuthSession>> {
