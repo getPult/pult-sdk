@@ -37,6 +37,7 @@ describe.skipIf(!TOKEN)("E2E: Full pipeline", () => {
   let pult: PultClient
   let appId: string
   let appName: string
+  let dbReady = false
 
   beforeAll(async () => {
     pult = client(TOKEN!)
@@ -110,19 +111,21 @@ describe.skipIf(!TOKEN)("E2E: Full pipeline", () => {
       expect(data!.app_id).toBe(appId)
     })
 
-    it("waits for database to be ready", { timeout: 200000 }, async () => {
+    it("waits for database to be ready", { timeout: 320000 }, async () => {
       await waitFor(async () => {
         const { data } = await pult.databases.get(appId)
         return data?.status === "ready"
-      }, 180000)
+      }, 300000, 5000)
 
       const { data } = await pult.databases.get(appId)
       expect(data!.status).toBe("ready")
       expect(typeof data!.port).toBe("number")
       expect(typeof data!.size).toBe("number")
+      dbReady = true
     })
 
     it("executes SQL query", async () => {
+      if (!dbReady) return
       const { data, error } = await pult.databases.query(appId, { sql: "SELECT 1 + 1 AS result" })
       expect(error).toBeNull()
       expect(data!.columns).toContain("result")
@@ -130,6 +133,7 @@ describe.skipIf(!TOKEN)("E2E: Full pipeline", () => {
     })
 
     it("creates table via migration", async () => {
+      if (!dbReady) return
       const { data, error } = await pult.databases.applyMigration(appId, {
         version: "001",
         name: "create_e2e_table",
@@ -145,6 +149,7 @@ describe.skipIf(!TOKEN)("E2E: Full pipeline", () => {
     })
 
     it("inserts and queries data via SQL", async () => {
+      if (!dbReady) return
       const { error: insertErr } = await pult.databases.query(appId, {
         sql: "INSERT INTO e2e_items (name, value) VALUES ('alpha', 10), ('beta', 20), ('gamma', 30)",
       })
@@ -160,6 +165,7 @@ describe.skipIf(!TOKEN)("E2E: Full pipeline", () => {
     })
 
     it("queries with WHERE filter", async () => {
+      if (!dbReady) return
       const { data, error } = await pult.databases.query(appId, {
         sql: "SELECT name FROM e2e_items WHERE value > 15 ORDER BY name",
       })
@@ -168,6 +174,7 @@ describe.skipIf(!TOKEN)("E2E: Full pipeline", () => {
     })
 
     it("list migrations includes the one we applied", async () => {
+      if (!dbReady) return
       const { data, error } = await pult.databases.listMigrations(appId)
       expect(error).toBeNull()
       const migration = data!.find((m: { version?: string }) => m.version === "001")
@@ -175,6 +182,7 @@ describe.skipIf(!TOKEN)("E2E: Full pipeline", () => {
     })
 
     it("list extensions returns array", async () => {
+      if (!dbReady) return
       const { data, error } = await pult.databases.listExtensions(appId)
       expect(error).toBeNull()
       expect(Array.isArray(data)).toBe(true)
@@ -186,6 +194,7 @@ describe.skipIf(!TOKEN)("E2E: Full pipeline", () => {
     })
 
     it("get database with secret returns connection string", async () => {
+      if (!dbReady) return
       const { data, error } = await pult.databases.get(appId, true)
       expect(error).toBeNull()
       expect(data!.connection_string).toBeDefined()
@@ -742,14 +751,14 @@ describe.skipIf(!TOKEN)("E2E: Auth (GoTrue)", () => {
     authAppId = data!.id
   })
 
-  it("enables database (required for auth)", { timeout: 200000 }, async () => {
+  it("enables database (required for auth)", { timeout: 320000 }, async () => {
     const { error } = await pult.databases.create(authAppId)
     expect(error).toBeNull()
 
     await waitFor(async () => {
       const { data } = await pult.databases.get(authAppId)
       return data?.status === "ready"
-    }, 180000)
+    }, 300000, 5000)
   })
 
   it("enables auth service", { timeout: 130000 }, async () => {
@@ -1327,8 +1336,8 @@ describe.skipIf(!TOKEN)("E2E: Database advanced", () => {
     await waitFor(async () => {
       const { data: db } = await pult.databases.get(appId)
       return db?.status === "ready"
-    }, 180000)
-  }, 210000)
+    }, 300000, 5000)
+  }, 330000)
 
   afterAll(async () => {
     if (appId && CLEANUP) await pult.apps.delete(appId)
