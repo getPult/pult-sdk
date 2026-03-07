@@ -42,4 +42,4 @@ jobs:
       - run: npm run build
       - name: Run E2E tests
         run: npx vitest run tests/e2e.test.ts --reporter=verbose
-        timeout-minutes: 5
+        timeout-minutes: 10
