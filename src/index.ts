@@ -18,6 +18,7 @@ export function createAuthClient(options: AuthClientOptions = {}): AuthClient {
 export { createRealtimeClient, RealtimeClient } from "./realtime"
 export { createRedisClient, RedisClient } from "./redis"
 export { createQueueClient, QueueClient } from "./queue"
+export { createCheckoutClient, CheckoutClient } from "./checkout"
 
 export { PultClient } from "./client"
 export { AIClient } from "./ai"
